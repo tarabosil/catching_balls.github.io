@@ -5,7 +5,7 @@ class FallingBall {
         this.r = r;
     }
      display() {
-         noStroke();
+         noStroke(); 
          fill(255, 178, 78);
          ellipse(this.x, this.y, this.r, this.r); 
      }

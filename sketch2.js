@@ -108,7 +108,7 @@ function setup() {
 function draw() {
   physics.update();
   background(0);
-  // tint(0,40);
+  // tint(0,40); 
   // image(video, 0, 0, w, h);
   // image(pg, 0, 0, w, h);
   var coordinates;

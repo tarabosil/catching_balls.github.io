@@ -48,7 +48,7 @@ class Firework {
         const p = new Point(this.firework.pos.x, this.firework.pos.y, this.hu, false);
         this.particles.push(p);
       }
-    }
+    } 
   
     show() {
       if (!this.exploded) {

@@ -46,7 +46,7 @@ class Point {
       }
   
       point(this.pos.x, this.pos.y);
-    }
+    } 
 
     floor() {
       if (this.pos.y >= height - 2) {
