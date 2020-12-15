@@ -1,10 +1,11 @@
 class Firework {
-    constructor(x, y, plosk) {
+    constructor(x, y, plosk, numberOfPoints) {
       this.hu = y;
       this.firework = new Point(x, y, this.hu, true);
       this.exploded = false;
       this.particles = [];
       this.plosk = plosk;
+      this.numberOfPoints = numberOfPoints;
     }
   
     done() {
@@ -22,7 +23,7 @@ class Firework {
   
         if (this.firework.vel.y >= 0) {
           this.exploded = true;
-          this.explode(y);
+          this.explode(this.numberOfPoints);
         }
       }
   
@@ -37,14 +38,14 @@ class Firework {
     }
   
     explode(y) {
-      let numberOfPoints = 0;
-      if (this.plosk){
-        numberOfPoints = 300;
-      } else {
-        numberOfPoints = 440 - y;
-      }
-      console.log(numberOfPoints);
-      for (let i = 0; i < numberOfPoints; i++) {
+      let points = y + 10;
+      console.log(points)
+      // if (this.plosk){
+      //   numberOfPoints = 300;
+      // } else {
+      //   numberOfPoints = 440 - y;
+      // }
+      for (let i = 0; i < points; i++) {
         const p = new Point(this.firework.pos.x, this.firework.pos.y, this.hu, false);
         this.particles.push(p);
       }

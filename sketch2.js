@@ -18,8 +18,6 @@ let VerletPhysics2D = toxi.physics2d.VerletPhysics2D,
     Vec2D = toxi.geom.Vec2D,
     Rect = toxi.geom.Rect;
 
-let NUM_PARTICLES = 50;
-
 let physics;
 let mouseAttractor;
 let mousePos;
@@ -42,27 +40,19 @@ let rightHPos;
 const fireworks = [];
 let gravity;
 
-// let bally = [];
-
 let handX;
 let handY;
 
 let pHandX;
 let pHandY;
 
+var balls = [];  
 
 
 function setup() {
-  createCanvas(w, h);
+  createCanvas(windowWidth, windowHeight);
   video = createCapture(VIDEO);
   background(0);
-  
-  for(let i=0;i<NUM_PARTICLES;i++) {
-    let p = createVector(0,0);
-    pPositions.push(p);
-    cPositions.push(p);
-    xs.push(0);
-  }
 
   gravity = createVector(0, 0.2);
 
@@ -110,29 +100,37 @@ function draw() {
   background(0);
   // tint(0,40);
   // image(video, 0, 0, w, h);
-  // image(pg, 0, 0, w, h);
   var coordinates;
   coordinates = drawKeypoints();
-  // pop();
-  // console.log(bally.getX(), bally.getY());
 
-  // console.log(bally);
-  // if (random(1) < 0.2){
-  //   bally.push(new FallingBall(random(0, width), 0, 30));
+  // if (balls.length < 4) {
+  //   balls.push(new Ball(random(50, width - 100), -50, random(10,50), random(0.01, 0.09)));
   // }
-
-  // for (let i = bally.length - 1; i >= 0; i--) {
-  //   bally[0].display();
-  //   bally[0].move();
-  //   // if (bally[i].getY() > height - 20) {
-  //   //   bally.splice(i, 1);
-  //   // }
-  //   if (coordinates.xRight < bally[i].getX() + 20 && coordinates.xRight > bally[i].getX() - 20  && coordinates.yRight > bally[i].getY() - 20 && coordinates.yRight < bally[i].getY() + 20 ) {
-  //     console.log("BAlly explode wuhuuuuu");
-  //     bally.splice(i, 1);
-  //     fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft));
+  
+  // for (var i = 0; i < balls.length; i ++ ) {
+  //   balls[i].update();
+  //   balls[i].display();
+  //   if (balls[i].done()) {
+  //     balls.splice(i, 1);
   //   }
+
+  //   if (abs(balls[i].getX() - mouseX) < balls[i].getW() && abs(balls[i].getY() - mouseY) < balls[i].getW()) {
+  //     fireworks.push(new Firework(balls[i].getX(), balls[i].getY(), false, balls[i].getW()));
+  //     balls.splice(i, 1);
+
+  //   }
+
+  //   for (let j = fireworks.length - 1; j >= 0; j--) {
+  //     fireworks[j].update(320);
+  //     fireworks[j].show();
+      
+  //     if (fireworks[j].done()) {
+  //       fireworks.splice(j, 1);
+  //     }
+  //   }
+
   // }
+  
 
   stroke(0,100);
     
@@ -157,6 +155,7 @@ function draw() {
   }
   noStroke();
 
+  // check for left and right wrist and draw fireworks
   if (coordinates.xRight != null && coordinates.yRight != null && coordinates.xLeft != null && coordinates.yLeft != null) {
     let distX = dist(coordinates.xRight, coordinates.yRight, coordinates.xLeft, coordinates.yLeft);
     if (distX < 80) {
@@ -179,7 +178,7 @@ function draw() {
       drawSkeleton();
       if (coordinates.xLeft != null && coordinates.yLeft != null) {
         if (random(1) < 0.03) {
-          fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft, false));
+          fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft, false, 100));
         }
         for (let i = fireworks.length - 1; i >= 0; i--) {
           fireworks[i].update(coordinates.yRight);
@@ -193,7 +192,7 @@ function draw() {
     
       if (coordinates.xRight != null && coordinates.yRight != null) {
         if (random(1) < 0.03) {
-          fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, false));
+          fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, false, 100));
         }
         for (let i = fireworks.length - 1; i >= 0; i--) {
           fireworks[i].update(coordinates.yRight);
@@ -207,6 +206,7 @@ function draw() {
     }
   }
 
+  // update fireworks
   for (let i = fireworks.length - 1; i >= 0; i--) {
     fireworks[i].update(coordinates.yRight);
     fireworks[i].show();
@@ -215,10 +215,9 @@ function draw() {
       fireworks.splice(i, 1);
     }
   }
-
-  
 }
 
+// draw skeleton
 function drawSkeleton() {
   for(let i = 0; i < poses.length; i++) {
     for(let j = 0; j < poses[i].skeleton.length; j++) {
@@ -235,6 +234,7 @@ function drawSkeleton() {
   }
 }
 
+// draw keypoints for skeleton
 function drawKeypoints() {
 
   let headX, headY;
