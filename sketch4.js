@@ -1,3 +1,9 @@
+/*
+MediaPipe library for body detection
+*/
+
+
+
 var balls = []; 
 const fireworks = [];
 var gravity;
@@ -17,13 +23,14 @@ var coordinates = {
 function setup() {
 
     let canvas = createCanvas(780, 400);
+    // let canvas = createCanvas(windowWidth, windowHeight);
     canvas.class("output_canvas");
+    background(0);
 
     gravity = createVector(0, 0.2);
 
     // Our input frames will come from here.
     videoElement = document.getElementsByClassName('input_video')[0];
-    
     canvasElement = document.getElementsByClassName('output_canvas')[0];
     controlsElement = document.getElementsByClassName('control-panel')[0];
     canvasCtx = canvasElement.getContext('2d');
@@ -71,7 +78,6 @@ function setup() {
 
         // Remove landmarks we don't want to draw.
         removeLandmarks(results);
-        // console.log(results);
 
         try {
             coordinates.indexLeftX = results["leftHandLandmarks"][8].x * width;
@@ -84,28 +90,26 @@ function setup() {
             coordinates.indexRightY = results["rightHandLandmarks"][8].y * height;
         } catch {}
 
-        // console.log(coordinates);
-
         // Draw the overlays.
         canvasCtx.save();
-        canvasCtx.clearRect(0, 0, 780, 400);
-        canvasCtx.drawImage(results.image, 0, 0, 780, 400);
+        // canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        // canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
         // Pose...
-        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#00FF00'});
-        drawLandmarks( canvasCtx, results.poseLandmarks, {color: '#00FF00', fillColor: '#FF0000'});
+        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#FFFFFF'});
+        drawLandmarks( canvasCtx, results.poseLandmarks, {color: '#FFFFFF', fillColor: '#FFFFFF'});
 
         // Hands...
-        drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS, {color: '#00CC00'});
-        drawLandmarks(canvasCtx, results.rightHandLandmarks, {color: '#00FF00', fillColor: '#FF0000'});
-        drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS, {color: '#CC0000'});
-        drawLandmarks(canvasCtx, results.leftHandLandmarks, {color: '#FF0000', fillColor: '#00FF00'});
+        drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS, {color: '#FFFFFF'});
+        drawLandmarks(canvasCtx, results.rightHandLandmarks, {color: '#FFFFFF', fillColor: '#FFFFFF'});
+        drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS, {color: '#FFFFFF'});
+        drawLandmarks(canvasCtx, results.leftHandLandmarks, {color: '#FFFFFF', fillColor: '#FFFFFF'});
 
         // Face...
-        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
-        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_RIGHT_EYE, {color: '#FF3030'});
-        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_RIGHT_EYEBROW, {color: '#FF3030'});
-        drawConnectors( canvasCtx, results.faceLandmarks, FACEMESH_LEFT_EYE, {color: '#30FF30'});
-        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_LEFT_EYEBROW, {color: '#30FF30'});
+        // drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
+        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_RIGHT_EYE, {color: '#FFFFFF'});
+        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_RIGHT_EYEBROW, {color: '#FFFFFF'});
+        drawConnectors( canvasCtx, results.faceLandmarks, FACEMESH_LEFT_EYE, {color: '#FFFFFF'});
+        drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_LEFT_EYEBROW, {color: '#FFFFFF'});
         drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_FACE_OVAL, {color: '#E0E0E0'});
         drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_LIPS, {color: '#E0E0E0'});
 
@@ -113,14 +117,14 @@ function setup() {
         canvasCtx.lineWidth = 5;
         if (results.poseLandmarks) {
             if (results.rightHandLandmarks) {
-            canvasCtx.strokeStyle = '#00FF00';
+            canvasCtx.strokeStyle = '#FFFFFF';
             connect(canvasCtx, [[
                         results.poseLandmarks[POSE_LANDMARKS.RIGHT_ELBOW],
                         results.rightHandLandmarks[0]
                     ]]);
             }
             if (results.leftHandLandmarks) {
-                canvasCtx.strokeStyle = '#FF0000';
+                canvasCtx.strokeStyle = '#FFFFFF';
                 connect(canvasCtx, [[
                         results.poseLandmarks[POSE_LANDMARKS.LEFT_ELBOW],
                         results.leftHandLandmarks[0]
@@ -141,9 +145,10 @@ function setup() {
     */
     const camera = new Camera(videoElement, {
         onFrame: async () => {
-            translate(width,0); // move to far corner
+            translate(width,0); 
             scale(-1.0,1.0);
-            canvasManipulation();
+            background(0);
+            // canvasManipulation();
             await holistic.send({image: videoElement});
             drawBalls();
         },
@@ -154,13 +159,9 @@ function setup() {
 
 }
 
-// function draw() {
-//     drawBalls();
-// }
-
 function canvasManipulation() {
     canvasCtx.save();
-    canvasCtx.clearRect(0, 0, 780, 400);
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 }
 
 function drawImage() {
@@ -176,7 +177,7 @@ function drawImage() {
 function drawBalls() {
 
     if (balls.length < 4) {
-        balls.push(new Ball(random(50, width - 100), -50, random(20,70), random(1.0, 3.0)));
+        balls.push(new Ball(random(50, width - 100), -50, random(20,70), random(0.1, 1.0)));
     }
 
     for (var i = 0; i < balls.length; i ++ ) {
@@ -187,40 +188,46 @@ function drawBalls() {
         }
 
         if (coordinates.indexRightX != null && coordinates.indexRightY != null) {
-            let distRight = dist(coordinates.indexRightX, coordinates.indexRightY, balls[i].getX(), balls[i].getY());
-            // console.log(coordinates.indexRightX, coordinates.indexRightY, balls[i].getX(), balls[i].getY());
-            if (distRight < 40) {
-            //   console.log("BUUUUUUUUUM");
-              fireworks.push(new Firework(coordinates.indexRightX, coordinates.indexRightY, false, 100));
-              balls.splice(i, 1);
-            }
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-              fireworks[i].update(coordinates.indexRightY);
-              fireworks[i].show();
-              
-              if (fireworks[i].done()) {
-                fireworks.splice(i, 1);
-              }
+            try {
+                let distRight = dist(coordinates.indexRightX, coordinates.indexRightY, balls[i].getX(), balls[i].getY());
+                // console.log(coordinates.indexRightX, coordinates.indexRightY, balls[i].getX(), balls[i].getY());
+                if (distRight < 40) {
+                //   console.log("BUUUUUUUUUM");
+                fireworks.push(new Firework(coordinates.indexRightX, coordinates.indexRightY, false, 100));
+                balls.splice(i, 1);
+                }
+                for (let i = fireworks.length - 1; i >= 0; i--) {
+                fireworks[i].update(coordinates.indexRightY);
+                fireworks[i].show();
+                
+                if (fireworks[i].done()) {
+                    fireworks.splice(i, 1);
+                }
+                }
+            } catch {
+                
             }
           }
 
 
         if (coordinates.indexLeftX != null && coordinates.indexLeftY != null) {
-            let distRight = dist(coordinates.indexLeftX, coordinates.indexLeftY, balls[i].getX(), balls[i].getY());
-            // console.log(coordinates.indexLeftX, coordinates.indexLeftY, balls[i].getX(), balls[i].getY());
-            if (distRight < 40) {
-            //  console.log("BUUUUUUUUUM");
-                fireworks.push(new Firework(coordinates.indexLeftX, coordinates.indexLeftY, false, 100));
-                balls.splice(i, 1);
-            }
-            for (let i = fireworks.length - 1; i >= 0; i--) {
-                fireworks[i].update(coordinates.indexLeftY);
-                fireworks[i].show();
-                
-                if (fireworks[i].done()) {
-                fireworks.splice(i, 1);
+            try {
+                let distRight = dist(coordinates.indexLeftX, coordinates.indexLeftY, balls[i].getX(), balls[i].getY());
+                // console.log(coordinates.indexLeftX, coordinates.indexLeftY, balls[i].getX(), balls[i].getY());
+                if (distRight < 40) {
+                //  console.log("BUUUUUUUUUM");
+                    fireworks.push(new Firework(coordinates.indexLeftX, coordinates.indexLeftY, false, 100));
+                    balls.splice(i, 1);
                 }
-            }
+                for (let i = fireworks.length - 1; i >= 0; i--) {
+                    fireworks[i].update(coordinates.indexLeftY);
+                    fireworks[i].show();
+                    
+                    if (fireworks[i].done()) {
+                    fireworks.splice(i, 1);
+                    }
+                }
+            } catch {}
         }
     } 
 }
