@@ -85,7 +85,7 @@ function setup() {
 
   leftHPos = new Vec2D(width/2,height/2); 
   leftHAttractor = new AttractionBehavior(leftHPos, 100, -2.9);
-  physics.addBehavior(leftHAttractor);
+  physics.addBehavior(leftHAttractor); 
 
   rightHPos = new Vec2D(width/2,height/2); 
   rightHAttractor = new AttractionBehavior(rightHPos, 100, -2.9);
@@ -99,37 +99,78 @@ function draw() {
   physics.update();
   background(0);
   // tint(0,40);
+  translate(width,0); // move to far corner
+  scale(-1.0,1.0);
   // image(video, 0, 0, w, h);
   var coordinates;
   coordinates = drawKeypoints();
+  drawSkeleton();
 
-  // if (balls.length < 4) {
-  //   balls.push(new Ball(random(50, width - 100), -50, random(10,50), random(0.01, 0.09)));
-  // }
+  if (balls.length < 4) {
+    balls.push(new Ball(random(50, width - 100), -50, random(10,50), random(0.01, 0.05)));
+  }
   
-  // for (var i = 0; i < balls.length; i ++ ) {
-  //   balls[i].update();
-  //   balls[i].display();
-  //   if (balls[i].done()) {
-  //     balls.splice(i, 1);
-  //   }
+  for (var i = 0; i < balls.length; i ++ ) {
+    balls[i].update();
+    balls[i].display();
+    if (balls[i].done()) {
+      balls.splice(i, 1);
+    }
 
-  //   if (abs(balls[i].getX() - mouseX) < balls[i].getW() && abs(balls[i].getY() - mouseY) < balls[i].getW()) {
-  //     fireworks.push(new Firework(balls[i].getX(), balls[i].getY(), false, balls[i].getW()));
-  //     balls.splice(i, 1);
+    if (coordinates.xLeft != null && coordinates.yLeft != null) {
+      coordinates = drawKeypoints();
+      drawSkeleton();
+      console.log("BUUUUUUUUUM");
+      let distRight = dist(coordinates.xLeft, coordinates.yLeft, balls[i].getX(), balls[i].getY());
+      if (distRight < 40) {
+        fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft, false, 100));
+        balls.splice(i, 1);
+      }
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        fireworks[i].update(coordinates.yRight);
+        fireworks[i].show();
+        
+        if (fireworks[i].done()) {
+          fireworks.splice(i, 1);
+        }
+      }
+    }
 
-  //   }
+    if (coordinates.xRight != null && coordinates.yRight != null) {
+      coordinates = drawKeypoints();
+      drawSkeleton();
+      console.log("BUUUUUUUUUM");
+      let distRight = dist(coordinates.xRight, coordinates.yRight, balls[i].getX(), balls[i].getY());
+      if (distRight < 40) {
+        fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, false, 100));
+        balls.splice(i, 1);
+      }
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        fireworks[i].update(coordinates.yRight);
+        fireworks[i].show();
+        
+        if (fireworks[i].done()) {
+          fireworks.splice(i, 1);
+        }
+      }
+    }
 
-  //   for (let j = fireworks.length - 1; j >= 0; j--) {
-  //     fireworks[j].update(320);
-  //     fireworks[j].show();
+
+    // if (abs(balls[i].getX() - mouseX) < balls[i].getW() && abs(balls[i].getY() - mouseY) < balls[i].getW()) {
+    //   fireworks.push(new Firework(balls[i].getX(), balls[i].getY(), false, balls[i].getW()));
+    //   balls.splice(i, 1);
+
+    // }
+
+    // for (let j = fireworks.length - 1; j >= 0; j--) {
+    //   fireworks[j].update(320);
+    //   fireworks[j].show();
       
-  //     if (fireworks[j].done()) {
-  //       fireworks.splice(j, 1);
-  //     }
-  //   }
-
-  // }
+    //   if (fireworks[j].done()) {
+    //     fireworks.splice(j, 1);
+    //   }
+    // }
+  }
   
 
   stroke(0,100);
@@ -155,66 +196,67 @@ function draw() {
   }
   noStroke();
 
+
   // check for left and right wrist and draw fireworks
-  if (coordinates.xRight != null && coordinates.yRight != null && coordinates.xLeft != null && coordinates.yLeft != null) {
-    let distX = dist(coordinates.xRight, coordinates.yRight, coordinates.xLeft, coordinates.yLeft);
-    if (distX < 80) {
-      background(0,0,35,25);
-      coordinates = drawKeypoints();
-      drawSkeleton();
-      console.log("PLoooooooooosk");
-      // fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, true));
-      var galaxy = { 
-        locationX : random(width),
-        locationY : random(height),
-        size : random(1, 4)
-      }
-        ellipse(mouseX ,mouseY, galaxy.size, galaxy.size);
-        ellipse(galaxy.locationX ,galaxy.locationY, galaxy.size, galaxy.size);
+  // if (coordinates.xRight != null && coordinates.yRight != null && coordinates.xLeft != null && coordinates.yLeft != null) {
+  //   let distX = dist(coordinates.xRight, coordinates.yRight, coordinates.xLeft, coordinates.yLeft);
+  //   if (distX < 80) {
+  //     background(0,0,35,25);
+  //     coordinates = drawKeypoints();
+  //     drawSkeleton();
+  //     console.log("PLoooooooooosk");
+  //     // fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, true));
+  //     var galaxy = { 
+  //       locationX : random(width),
+  //       locationY : random(height),
+  //       size : random(1, 4)
+  //     }
+  //       ellipse(mouseX ,mouseY, galaxy.size, galaxy.size);
+  //       ellipse(galaxy.locationX ,galaxy.locationY, galaxy.size, galaxy.size);
     
-    } else {
-      background(0);
-      coordinates = drawKeypoints();
-      drawSkeleton();
-      if (coordinates.xLeft != null && coordinates.yLeft != null) {
-        if (random(1) < 0.03) {
-          fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft, false, 100));
-        }
-        for (let i = fireworks.length - 1; i >= 0; i--) {
-          fireworks[i].update(coordinates.yRight);
-          fireworks[i].show();
+  //   } else {
+  //     // background(0);
+  //     coordinates = drawKeypoints();
+  //     drawSkeleton();
+  //     if (coordinates.xLeft != null && coordinates.yLeft != null) {
+  //       if (random(1) < 0.03) {
+  //         fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft, false, 100));
+  //       }
+  //       for (let i = fireworks.length - 1; i >= 0; i--) {
+  //         fireworks[i].update(coordinates.yRight);
+  //         fireworks[i].show();
           
-          if (fireworks[i].done()) {
-            fireworks.splice(i, 1);
-          }
-        }
-      }
+  //         if (fireworks[i].done()) {
+  //           fireworks.splice(i, 1);
+  //         }
+  //       }
+  //     }
     
-      if (coordinates.xRight != null && coordinates.yRight != null) {
-        if (random(1) < 0.03) {
-          fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, false, 100));
-        }
-        for (let i = fireworks.length - 1; i >= 0; i--) {
-          fireworks[i].update(coordinates.yRight);
-          fireworks[i].show();
+  //     if (coordinates.xRight != null && coordinates.yRight != null) {
+  //       if (random(1) < 0.03) {
+  //         fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, false, 100));
+  //       }
+  //       for (let i = fireworks.length - 1; i >= 0; i--) {
+  //         fireworks[i].update(coordinates.yRight);
+  //         fireworks[i].show();
     
-          if (fireworks[i].done()) {
-            fireworks.splice(i, 1);
-          }
-        }
-      }
-    }
-  }
+  //         if (fireworks[i].done()) {
+  //           fireworks.splice(i, 1);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   // update fireworks
-  for (let i = fireworks.length - 1; i >= 0; i--) {
-    fireworks[i].update(coordinates.yRight);
-    fireworks[i].show();
+  // for (let i = fireworks.length - 1; i >= 0; i--) {
+  //   fireworks[i].update(coordinates.yRight);
+  //   fireworks[i].show();
 
-    if (fireworks[i].done()) {
-      fireworks.splice(i, 1);
-    }
-  }
+  //   if (fireworks[i].done()) {
+  //     fireworks.splice(i, 1);
+  //   }
+  // }
 }
 
 // draw skeleton
