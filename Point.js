@@ -1,9 +1,10 @@
 class Point {
-    constructor(x, y, hu, firework) {
+    constructor(x, y, hu, color, firework) {
       this.pos = createVector(x, y);
       this.firework = firework;
       this.lifespan = 500;
       this.hu = hu;
+      this.color = color;
       this.acc = createVector(0, 0);
       if (this.firework) {
         this.vel = createVector(0, 0); // second parameter like random(-12, -8) means that point goes up
@@ -38,11 +39,13 @@ class Point {
     show() {
   
       if (!this.firework) {
-        strokeWeight(2);
-        stroke(255, 255, this.hu, this.lifespan);
+        strokeWeight(3);
+        colorMode(HSL, 359, 100, 100);
+        stroke(this.color, 94, 72);
       } else {
         strokeWeight(6);
-        stroke(255, 255, this.hu);
+        colorMode(HSL, 359, 100, 100);
+        stroke(this.color, 94, 72);
       }
   
       point(this.pos.x, this.pos.y);

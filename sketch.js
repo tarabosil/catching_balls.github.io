@@ -17,7 +17,6 @@ function setup() {
 
   gravity = createVector(0, 0.2);
 
-  
 }
 
 function draw() {
@@ -50,7 +49,5 @@ function draw() {
         fireworks.splice(j, 1);
       }
     }
-
   }
-
 }

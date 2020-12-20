@@ -1,4 +1,6 @@
-let w = 640;
+// using ml5.js library and PoseNet
+
+let w = 840;
 let h = 480;
 let video;
 let poseNet;
@@ -52,6 +54,7 @@ var balls = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   video = createCapture(VIDEO);
+  video.size(windowWidth, windowHeight);
   background(0);
 
   gravity = createVector(0, 0.2);
@@ -101,7 +104,7 @@ function draw() {
   // tint(0,40);
   translate(width,0); // move to far corner
   scale(-1.0,1.0);
-  // image(video, 0, 0, w, h);
+  // image(video, 0, 0, windowWidth, windowHeight);
   var coordinates;
   coordinates = drawKeypoints();
   drawSkeleton();
@@ -120,7 +123,7 @@ function draw() {
     if (coordinates.xLeft != null && coordinates.yLeft != null) {
       coordinates = drawKeypoints();
       drawSkeleton();
-      console.log("BUUUUUUUUUM");
+      // console.log("BUUUUUUUUUM");
       let distRight = dist(coordinates.xLeft, coordinates.yLeft, balls[i].getX(), balls[i].getY());
       if (distRight < 40) {
         fireworks.push(new Firework(coordinates.xLeft, coordinates.yLeft, false, 100));
@@ -139,7 +142,7 @@ function draw() {
     if (coordinates.xRight != null && coordinates.yRight != null) {
       coordinates = drawKeypoints();
       drawSkeleton();
-      console.log("BUUUUUUUUUM");
+      // console.log("BUUUUUUUUUM");
       let distRight = dist(coordinates.xRight, coordinates.yRight, balls[i].getX(), balls[i].getY());
       if (distRight < 40) {
         fireworks.push(new Firework(coordinates.xRight, coordinates.yRight, false, 100));

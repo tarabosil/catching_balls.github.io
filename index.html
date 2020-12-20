@@ -7,16 +7,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.dom.min.js"></script>
     <script src="https://CDN.JSDelivr.net/gh/hapticdata/toxiclibsjs/build/toxiclibs.min.js"></script>
     <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.sound.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.12.0/matter.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossorigin="anonymous" ></script>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+            crossorigin="anonymous" />
     <style>
         body {
             padding: 0;
             margin: 0;
+        }
+        .output_canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
@@ -26,10 +41,28 @@
     <script src="firework.js"></script>
     <script src="ball.js"></script>
     <script src="sketch4.js"></script>
+    <script src="body/head.js"></script>
+    <script src="body/pose.js"></script>
+    <script src="body/hand.js"></script>
 
-    <div class="container">
+    <div class="container-fluid w-100 h-100 pa-0">
+        <div class="row h-100">
+            <div class="col">
+                <!-- <canvas
+                        id="p5canvas"
+                        width="400"
+                        height="200"
+                        webgl
+                        class="output_canvas"
+                    ></canvas> -->
+                <video class="input_video" hidden></video>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="container">
         <video class="input_video" hidden></video>
-	  </div>
+	  </div> -->
 
 </body>
 </html> 
