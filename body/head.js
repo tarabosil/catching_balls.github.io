@@ -12,7 +12,7 @@ function BodyPoints(x, y, r) {
   
   BodyPoints.prototype.show = function() {
     noStroke();
-    fill(0);
+    fill(0, 0, 0, 0);
     var pos = this.body.position;
     push();
     translate(pos.x, pos.y);

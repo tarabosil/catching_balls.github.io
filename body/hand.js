@@ -12,7 +12,7 @@ function HandPoints(x, y, r) {
   
   HandPoints.prototype.show = function() {
     noStroke();
-    fill(0);
+    fill(0, 0, 0, 0);
     var pos = this.body.position;
     push();
     translate(pos.x, pos.y);

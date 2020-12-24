@@ -2,7 +2,7 @@ class Point {
     constructor(x, y, hu, color, firework) {
       this.pos = createVector(x, y);
       this.firework = firework;
-      this.lifespan = 500;
+      this.lifespan = 750;
       this.hu = hu;
       this.color = color;
       this.acc = createVector(0, 0);
