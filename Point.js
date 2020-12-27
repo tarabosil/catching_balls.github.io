@@ -47,7 +47,6 @@ class Point {
         colorMode(HSL, 359, 100, 100);
         stroke(this.color, 94, 72);
       }
-  
       point(this.pos.x, this.pos.y);
     } 
 

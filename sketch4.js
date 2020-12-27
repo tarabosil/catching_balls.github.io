@@ -24,8 +24,10 @@ let canvasElement = null;
 let canvasCtx = null;
 let controlsElement = null;
 
-// define index finger coordinates
-var coordinates = {
+// define finger coordinates
+var fingerLeftCoor = [];
+var fingerRightCoor = [];
+var fingerCoordinates = {
     indexRightX: null,
     indexRightY: null,
     indexLeftX: null,
@@ -45,36 +47,7 @@ var coordinates = {
   };
 
   // define head coordinates
-  var headCoordinates = {
-      x0: null,
-      y0: null,
-      x1: null,
-      y1: null,
-      x2: null,
-      y2: null,
-      x3: null,
-      y4: null,
-      x5: null,
-      y5: null,
-      x6: null,
-      y6: null,
-      x54: null,
-      y54: null,
-      x284: null,
-      y284: null,
-      x21: null,
-      y21: null,
-      x251: null,
-      y251: null,
-      x162: null,
-      y162: null,
-      x389: null,
-      y389: null,
-      x127: null,
-      y127: null,
-      x356: null,
-      y356: null
-  };
+  var headCoor = [];
 
   var poseCoordinates = {
       x11: null,
@@ -177,109 +150,48 @@ function setup() {
         // Remove landmarks we don't want to draw.
         removeLandmarks(results);
 
-        try {
-            coordinates.indexLeftX = results.leftHandLandmarks[8].x * width;
-            coordinates.indexLeftY = results.leftHandLandmarks[8].y * height;
-            coordinates.middleLeftX = results.leftHandLandmarks[12].x * width;
-            coordinates.middleLeftY = results.leftHandLandmarks[12].y * height;
-            coordinates.ringLeftX = results.leftHandLandmarks[16].x * width;
-            coordinates.ringLeftY = results.leftHandLandmarks[16].y * height;
-            coordinates.pinkyLeftX = results.leftHandLandmarks[20].x * width;
-            coordinates.pinkyLeftY = results.leftHandLandmarks[20].y * height;
-        } catch {
-            coordinates.indexLeftX = null;
-            coordinates.indexLeftY = null;
-            coordinates.middleLeftX = null;
-            coordinates.middleLeftY = null;
-            coordinates.ringLeftX = null;
-            coordinates.ringLeftY = null;
-            coordinates.pinkyLeftX = null;
-            coordinates.pinkyLeftY = null;
+        // head coordinates
+        for (let i = 0; i < FACEMESH_FACE_OVAL.length; i++) {
+            headCoor[i] = {};
+            try {
+                headCoor[i].x = results.faceLandmarks[FACEMESH_FACE_OVAL[i][0]].x * width;
+                headCoor[i].y= results.faceLandmarks[FACEMESH_FACE_OVAL[i][0]].y * height;
+            } catch {
+                headCoor[i].x = null;
+                headCoor[i].y = null;
+            }
         }
 
-        try {
-            coordinates.indexRightX = results.rightHandLandmarks[8].x * width;
-            coordinates.indexRightY = results.rightHandLandmarks[8].y * height;
-            coordinates.middleRightX = results.rightHandLandmarks[12].x * width;
-            coordinates.middleRightY = results.rightHandLandmarks[12].y * height;
-            coordinates.ringRightX = results.rightHandLandmarks[16].x * width;
-            coordinates.ringRightY = results.rightHandLandmarks[16].y * height;
-            coordinates.pinkyRightX = results.rightHandLandmarks[20].x * width;
-            coordinates.pinkyRightY = results.rightHandLandmarks[20].y * height;
-        } catch {
-            coordinates.indexRightX = null;
-            coordinates.indexRightY = null;
-            coordinates.middleRightX = null;
-            coordinates.middleRightY = null;
-            coordinates.ringRightX = null;
-            coordinates.ringRightY = null;
-            coordinates.pinkyRightX = null;
-            coordinates.pinkyRightY = null;
+        // left fingers coordinates
+        let j = 0;
+        for (let i = 0; i < HAND_CONNECTIONS.length; i++) {
+            if (HAND_CONNECTIONS[i][1] % 4 == 0){
+                fingerLeftCoor[j] = {};
+                try {
+                    fingerLeftCoor[j].x = results.leftHandLandmarks[HAND_CONNECTIONS[i][1]].x * width;
+                    fingerLeftCoor[j].y = results.leftHandLandmarks[HAND_CONNECTIONS[i][1]].y * height;
+                } catch {
+                    fingerLeftCoor[j].x = null;
+                    fingerLeftCoor[j].y = null;
+                }
+                j += 1;
+            }
         }
 
-        // get head coordinates
-        try {
-            headCoordinates.x0 = results.faceLandmarks[10].x * width;
-            headCoordinates.y0 = results.faceLandmarks[10].y * height;
-            headCoordinates.x1 = results.faceLandmarks[109].x * width;
-            headCoordinates.y1 = results.faceLandmarks[109].y * height;
-            headCoordinates.x2 = results.faceLandmarks[338].x * width;
-            headCoordinates.y2 = results.faceLandmarks[338].y * height;
-            headCoordinates.x3 = results.faceLandmarks[67].x * width;
-            headCoordinates.y3 = results.faceLandmarks[67].y * height;
-            headCoordinates.x4 = results.faceLandmarks[103].x * width;
-            headCoordinates.y4 = results.faceLandmarks[103].y * height;
-            headCoordinates.x5 = results.faceLandmarks[297].x * width;
-            headCoordinates.y5 = results.faceLandmarks[297].y * height;
-            headCoordinates.x6 = results.faceLandmarks[332].x * width;
-            headCoordinates.y6 = results.faceLandmarks[332].y * height;
-            headCoordinates.x54 = results.faceLandmarks[54].x * width;
-            headCoordinates.y54 = results.faceLandmarks[54].y * height;
-            headCoordinates.x284 = results.faceLandmarks[284].x * width;
-            headCoordinates.y284 = results.faceLandmarks[284].y * height;
-            headCoordinates.x21 = results.faceLandmarks[21].x * width;
-            headCoordinates.y21  = results.faceLandmarks[21].y * height;
-            headCoordinates.x251 = results.faceLandmarks[251].x * width;
-            headCoordinates.y251 = results.faceLandmarks[251].y * height;
-            headCoordinates.x162 = results.faceLandmarks[162].x * width;
-            headCoordinates.y162= results.faceLandmarks[162].y * height;
-            headCoordinates.x389 = results.faceLandmarks[389].x * width;
-            headCoordinates.y389 = results.faceLandmarks[389].y * height;
-            headCoordinates.x127 = results.faceLandmarks[127].x * width;
-            headCoordinates.y127 = results.faceLandmarks[127].y * height;
-            headCoordinates.x356 = results.faceLandmarks[356].x * width;
-            headCoordinates.y356 = results.faceLandmarks[356].y * height;
-        } catch {
-            headCoordinates.x0 = null;
-            headCoordinates.y0 = null;
-            headCoordinates.x1 = null;
-            headCoordinates.y1 = null;
-            headCoordinates.x2 = null;
-            headCoordinates.y2 = null;
-            headCoordinates.x3 = null;
-            headCoordinates.y3 = null;
-            headCoordinates.x4 = null;
-            headCoordinates.y4 = null;
-            headCoordinates.x5 = null;
-            headCoordinates.y5 = null;
-            headCoordinates.x6 = null;
-            headCoordinates.y6 = null;
-            headCoordinates.x54 = null;
-            headCoordinates.y54 = null;
-            headCoordinates.x284 = null;
-            headCoordinates.y284 = null;
-            headCoordinates.x21 = null;
-            headCoordinates.y21  = null;
-            headCoordinates.x251 = null;
-            headCoordinates.y251 = null;
-            headCoordinates.x162 = null;
-            headCoordinates.y162= null;
-            headCoordinates.x389 = null;
-            headCoordinates.y389 = null;
-            headCoordinates.x127 = null;
-            headCoordinates.y127 = null;
-            headCoordinates.x356 = null;
-            headCoordinates.y356 = null;
+        // right fingers coordinates
+        let k = 0;
+        for (let i = 0; i < HAND_CONNECTIONS.length; i++) {
+            if (HAND_CONNECTIONS[i][1] % 4 == 0){
+                fingerRightCoor[k] = {};
+                try {
+                    fingerRightCoor[k].x = results.rightHandLandmarks[HAND_CONNECTIONS[i][1]].x * width;
+                    fingerRightCoor[k].y = results.rightHandLandmarks[HAND_CONNECTIONS[i][1]].y * height;
+                } catch {
+                    fingerRightCoor[k].x = null;
+                    fingerRightCoor[k].y = null;
+                }
+                k += 1;
+            }
         }
 
         // get pose coordinates
@@ -474,72 +386,32 @@ function drawBalls() {
             balls.splice(i, 1);
         }
 
-        // right hand check - explode the ball
-        if (coordinates.indexRightX != null && coordinates.indexRightY != null) {
-            try {
-                let distRight = dist(coordinates.indexRightX, coordinates.indexRightY, balls[i].getX(), balls[i].getY());
-                let distRight1 = dist(coordinates.middleRightX, coordinates.middleRightY, balls[i].getX(), balls[i].getY());
-                let distRight2 = dist(coordinates.ringRightX, coordinates.ringRightY, balls[i].getX(), balls[i].getY());
-                let distRight3 = dist(coordinates.pinkyRightX, coordinates.pinkyRightY, balls[i].getX(), balls[i].getY());
-                if (distRight < 40) {
-                    fireworks.push(new Firework(coordinates.indexRightX, coordinates.indexRightY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-                if (distRight1 < 40) {
-                    fireworks.push(new Firework(coordinates.middleRightX, coordinates.middleRightY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-                if (distRight2 < 40) {
-                    fireworks.push(new Firework(coordinates.ringRightX, coordinates.ringRightY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-                if (distRight3 < 40) {
-                    fireworks.push(new Firework(coordinates.pinkyRightX, coordinates.pinkyRightY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-            } catch {}
+        for (let ii = 0; ii < fingerLeftCoor.length; ii++) {
+            if (fingerLeftCoor[ii].x != null && fingerLeftCoor[ii].y != null) {
+                try {
+                    let distance = dist(fingerLeftCoor[ii].x, fingerLeftCoor[ii].y, balls[i].getX(), balls[i].getY());
+                    if (distance < 40) {
+                        fireworks.push(new Firework(fingerLeftCoor[ii].x, fingerLeftCoor[ii].y, false, balls[i].getW() * 2, balls[i].getColor()));
+                        firework_sound.play();
+                        bodyColor = hslToHex(balls[i].getColor(), 94, 72);
+                        balls.splice(i, 1);
+                    }
+                } catch {}
+            }
         }
 
-        // left hand check - explode the ball
-        if (coordinates.indexLeftX != null && coordinates.indexLeftY != null) {
-            try {
-                let distRight = dist(coordinates.indexLeftX, coordinates.indexLeftY, balls[i].getX(), balls[i].getY());
-                let distRight1 = dist(coordinates.middleLeftX, coordinates.middleLeftY, balls[i].getX(), balls[i].getY());
-                let distRight2 = dist(coordinates.ringLeftX, coordinates.ringLeftY, balls[i].getX(), balls[i].getY());
-                let distRight3 = dist(coordinates.pinkyLeftX, coordinates.pinkyLeftY, balls[i].getX(), balls[i].getY());
-                if (distRight < 40) {
-                    fireworks.push(new Firework(coordinates.indexLeftX, coordinates.indexLeftY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-                if (distRight1 < 40) {
-                    fireworks.push(new Firework(coordinates.middleLeftX, coordinates.middleLeftY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-                if (distRight2 < 40) {
-                    fireworks.push(new Firework(coordinates.ringLeftX, coordinates.ringLeftY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-                if (distRight3 < 40) {
-                    fireworks.push(new Firework(coordinates.pinkyLeftX, coordinates.pinkyLeftY, false, balls[i].getW() * 2, balls[i].getColor()));
-                    firework_sound.play();
-                    bodyColor = hslToHex(balls[i].getColor(), 94, 72);
-                    balls.splice(i, 1);
-                }
-            } catch {}
+        for (let ii = 0; ii < fingerRightCoor.length; ii++) {
+            if (fingerRightCoor[ii].x != null && fingerRightCoor[ii].y != null) {
+                try{
+                    let distance = dist(fingerRightCoor[ii].x, fingerRightCoor[ii].y, balls[i].getX(), balls[i].getY());
+                    if (distance < 40) {
+                        fireworks.push(new Firework(fingerRightCoor[ii].x, fingerRightCoor[ii].y, false, balls[i].getW() * 2, balls[i].getColor()));
+                        firework_sound.play();
+                        bodyColor = hslToHex(balls[i].getColor(), 94, 72);
+                        balls.splice(i, 1);
+                    }
+                }catch {}
+            }
         }
         updateFirework();
     } 
@@ -553,50 +425,10 @@ function addNewBall(){
 
 // add head points
 function addHeadPoints() {
-    if (headCoordinates.x0 != null && headCoordinates.y0 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x0, headCoordinates.y0, 10));
-    }
-    if (headCoordinates.x1 != null && headCoordinates.y1 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x1, headCoordinates.y1, 10));
-    }
-    if (headCoordinates.x2 != null && headCoordinates.y2 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x2, headCoordinates.y2, 10));
-    }
-    if (headCoordinates.x3 != null && headCoordinates.y3 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x3, headCoordinates.y3, 10));
-    }
-    if (headCoordinates.x4 != null && headCoordinates.y4 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x4, headCoordinates.y4, 10));
-    }
-    if (headCoordinates.x5 != null && headCoordinates.y5 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x5, headCoordinates.y5, 10));
-    }
-    if (headCoordinates.x6 != null && headCoordinates.y6 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x6, headCoordinates.y6, 10));
-    }
-    if (headCoordinates.x54 != null && headCoordinates.y54!= null) {
-        headPoints.push(new BodyPoints(headCoordinates.x54, headCoordinates.y54, 10));
-    }
-    if (headCoordinates.x284 != null && headCoordinates.y284 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x284, headCoordinates.y284, 10));
-    }
-    if (headCoordinates.x21 != null && headCoordinates.y21 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x21, headCoordinates.y21, 10));
-    }
-    if (headCoordinates.x162 != null && headCoordinates.y162 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x162, headCoordinates.y162, 10));
-    }
-    if (headCoordinates.x251 != null && headCoordinates.y251 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x251, headCoordinates.y251, 10));
-    }
-    if (headCoordinates.x389 != null && headCoordinates.y389 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x389, headCoordinates.y389, 10));
-    }
-    if (headCoordinates.x127 != null && headCoordinates.y127 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x127, headCoordinates.y127, 10));
-    }
-    if (headCoordinates.x356 != null && headCoordinates.y356 != null) {
-        headPoints.push(new BodyPoints(headCoordinates.x356, headCoordinates.y356, 10));
+    for (let i = 0; i < headCoor.length; i++) {
+        if (headCoor[i].x != null && headCoor[i].y != null){
+            headPoints.push(new BodyPoints(headCoor[i].x, headCoor[i].y, 10));
+        }
     }
 }
 
@@ -699,7 +531,7 @@ function hslToHex(h, s, l) {
     l /= 100;
     let r, g, b;
     if (s === 0) {
-      r = g = b = l; // achromatic
+      r = g = b = l;
     } else {
       const hue2rgb = (p, q, t) => {
         if (t < 0) t += 1;
