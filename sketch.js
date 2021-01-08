@@ -87,22 +87,22 @@ function preload() {
     firework_sound = loadSound('sound/firework-sound.mp3');
 }
 
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
+// function windowResized() {
+//     resizeCanvas(windowWidth, windowHeight);
+// }
 
 function setup() {
 
     let canvas = createCanvas(windowWidth, windowHeight);
     console.log(windowWidth, windowHeight);
-    canvas.class("output_canvas");
+    // canvas.class("output_canvas");
     background(0);
 
     // Our input frames will come from here.
     videoElement = document.getElementsByClassName('input_video')[0];
-    canvasElement = document.getElementsByClassName('output_canvas')[0];
-    canvasElement.width  = window.innerWidth;
-    canvasElement.height = window.innerHeight;
+    canvasElement = document.getElementById('defaultCanvas0');
+    console.log(canvasElement);
+    console.log(canvasElement.width, canvasElement.height);
     controlsElement = document.getElementsByClassName('control-panel')[0];
     canvasCtx = canvasElement.getContext('2d');
 
@@ -184,6 +184,11 @@ function setup() {
     const holistic = new Holistic({locateFile: (file) => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.1/${file}`;
     }});
+    holistic.setOptions({
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
     holistic.onResults(onResults);
 
     // camera
