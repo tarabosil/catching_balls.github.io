@@ -21,12 +21,16 @@ class Firework {
       if (!this.exploded) {
         this.firework.applyForce(gravity);
         this.firework.update();
+
+        this.exploded = true;
+        this.explode(this.numberOfPoints);
   
-        if (this.firework.vel.y >= 0) {
-          this.exploded = true;
-          this.explode(this.numberOfPoints);
-        }
+        // if (this.firework.vel.y >= 0) {
+        //   this.exploded = true;
+        //   this.explode(this.numberOfPoints);
+        // }
       }
+
   
       for (let i = this.particles.length - 1; i >= 0; i--) {
         this.particles[i].applyForce(gravity);
@@ -39,18 +43,18 @@ class Firework {
     }
   
     explode(numberPoints) {
+      // size of firework is depend on size of the ball
       let points = numberPoints;
-      console.log(points);
-      for (let i = 0; i < 50; i++) {
-        const p = new Point(this.firework.pos.x, this.firework.pos.y, this.hu, this.color, false);
+      for (let i = 0; i < points; i++) {
+        const p = new Point(this.firework.pos.x, this.firework.pos.y, this.hu, this.color, false, points);
         this.particles.push(p);
       }
     } 
   
     show() {
-      if (!this.exploded) {
-        this.firework.show();
-      }
+      // if (!this.exploded) {
+      //   this.firework.show();
+      // }
   
       for (var i = 0; i < this.particles.length; i++) {
         this.particles[i].show();
