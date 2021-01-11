@@ -94,7 +94,7 @@ function preload() {
 function setup() {
 
     let canvas = createCanvas(windowWidth, windowHeight);
-    console.log(windowWidth, windowHeight);
+    console.log(canvas.size());
     // canvas.class("output_canvas");
     background(0);
 
@@ -102,6 +102,7 @@ function setup() {
     videoElement = document.getElementsByClassName('input_video')[0];
     canvasElement = document.getElementById('defaultCanvas0');
     console.log(canvasElement);
+    console.log(displayWidth, displayHeight)
     console.log(canvasElement.width, canvasElement.height);
     controlsElement = document.getElementsByClassName('control-panel')[0];
     canvasCtx = canvasElement.getContext('2d');
@@ -213,7 +214,7 @@ function createFirework() {
     Engine.update(engine);
 
     // define max number of balls
-    if (balls.length < 5) {
+    if (balls.length < 8) {
         addNewBall();
     }
 
@@ -286,7 +287,7 @@ function createFirework() {
 
 // add new ball to the world
 function addNewBall(){
-    var ball = new Ball(random(50, width - 100), random(-30, 0), random(10, 70), random(0.1, 1.0), random(5, 30));
+    var ball = new Ball(random(50, width - 100), random(-50, 0), random(10, 70), random(0.1, 1.0), random(5, 30));
     balls.push(ball);
 }
 

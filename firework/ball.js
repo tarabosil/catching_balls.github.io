@@ -10,7 +10,6 @@
       restitution: 0.5,
       friction: 0,
       density: 1
-
     }
     this.body = Bodies.circle(x, y, w, options);
     this.body.label = "Ball";
